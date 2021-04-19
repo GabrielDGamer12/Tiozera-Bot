@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Testes Bots",
+        "lastPrefix": "!",
+        "prefix": "/",
+        "role": "botadmin",
+        "discordChannels": [
+            825951578225639400
+        ],
+        "twitchChannels": [
+            "Emi_chi"
+        ]
+    }
+]
