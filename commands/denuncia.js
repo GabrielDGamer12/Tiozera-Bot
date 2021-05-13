@@ -6,9 +6,9 @@ const content = args.slice(1).join(" ");
 const userid = message.mentions.users.first();
 
 if (!args[0]) {
-  return message.channel.send(`${message.author}, escreva sua denúncia após o comando`)
+  return message.channel.send(`${message.author}, não é possivel enviar uma denúncia vazia, envie a denuncia com **+denuncia @(usuario a ser denunciado) (mensagem da denuncia)**`)
 } else if (content.length < 1) {
-  return message.channel.send(`${message.author}, não é possivel enviar uma denúncia vazia.`);
+  return message.channel.send(`${message.author}, não é possivel enviar uma denúncia vazia, envie a denuncia com **+denuncia @(usuario a ser denunciado) (mensagem da denuncia)**`);
 } else if (content.length > 1000) {
   return message.channel.send(`${message.author}, forneça uma denúncia de no máximo 1000 caracteres.`);
 } else {

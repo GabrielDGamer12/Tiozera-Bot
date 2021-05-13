@@ -13,17 +13,32 @@ app.get("/", (request, response) => {
 });
 app.listen(process.env.PORT); // Recebe solicitações que o deixa online
 
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
+const listener = app.listen(port, () => {
+  console.log("Your app is listening on port " + listener.address().port);
+});
+
+app.use(express.json());
+
+app.post("/webhooks/callback", async (req, res) => {
+  const { type } = req.body.subscription;
+  const { event } = req.body;
+
+  console.log(
+    `Receiving ${type} request for ${event.broadcaster_user_name}: `,
+    event
+  );
+
+  res.status(200).end();
+});
+
 const Discord = require("discord.js"); //Conexão com a livraria Discord.js
 const client = new Discord.Client(); //Criação de um novo Client
 const config = require("./config.json"); //Pegando o prefixo do bot para respostas de comandos
 const { prefix } = require("./config.json");
-
-// OAuth-2.0 //
-
-
-
-// OAuth-2.0 //
-
 
 // TWITCH //
 
@@ -37,9 +52,12 @@ var options = { method: 'GET',
     url: 'https://api.twitch.tv/helix/streams/',
     headers:
         { 
-					"Client-ID": 'twitchClientID' ,
-          "Authorization": 'Bearer tokentwitch https://id.twitch.tv/oauth2/validate' 
-            } };
+                    "Client-ID": twitchClientID,
+          "Authorization": 'Bearer ' + tokentwitch
+            },
+            qs: {
+			'user_login': `tiozeragames`
+		} };
 
 request(options, function (error, response, body) {
     if (error) throw new Error(error);
@@ -66,21 +84,18 @@ hook.send('Bot Reiniciado!');
 
 // WEBHOOK-TEST //
 
-// SEARCH-YOUTUBE //
-
-// SEARCH-YOUTUBE //
-
 // BOT-STATUS //
-
 client.on("ready", () => {
   let activities = [
-      `${client.users.cache.size} membros!`,
-      `+youtube`,
-      `Codigo Aberto: +dev`
+      `Tiozera Games`,
+      `+comandos`,
+      `${client.users.cache.size} membros!`
     ],
     i = 0;
   setInterval( () => client.user.setActivity(`${activities[i++ % activities.length]}`, {
-        type: "WATCHING"
+        name: 'Tiozera Games',
+        type: "STREAMING",
+        url: "https://www.twitch.tv/tiozeragames"
       }), 1000 * 60); 
   client.user
       .setStatus("online")
@@ -92,83 +107,10 @@ console.log("Estou Online!")
 
 // UNBAN-COMMAND //
 
-// Em Breve //
-
 // UNBAN-COMMAND //
 
 
-// BAN-AND-KICK-COMMAND //
-const command = require('./command')
 
-client.on('ready', () => {
-
-
-  command(client, 'ban', (message) => {
-    const { member, mentions } = message
-
-    const tag = `<@${member.id}>`
-
-    if (
-      member.hasPermission('ADMINISTRATOR') ||
-      member.hasPermission('BAN_MEMBERS')
-    ) {
-      const target = mentions.users.first()
-      if (target) {
-        const targetMember = message.guild.members.cache.get(target.id)
-        targetMember.ban() 
-        warns_channel = client.channels.cache.get('741370926570143784');
-        warns_channel.send(`──── Banimento ────
-
-:boy: Usuario: ${targetMember}
-:boy: ID: ${target.id}
-
-👮 Punido por: ${tag} 
-
-──── Banimento ────`)
-      } else {
-        message.channel.send(`${tag} Especifique alguém para banir.`)
-      }
-    } else {
-      message.channel.send(
-        `${tag} Você não tem permissão para usar este comando.`
-      )
-    }
-  })
-
-  command(client, 'kick', (message) => {
-    const { member, mentions } = message
-
-    const tag = `<@${member.id}>`
-
-    if (
-      member.hasPermission('ADMINISTRATOR') ||
-      member.hasPermission('KICK_MEMBERS')
-    ) {
-      const target = mentions.users.first()
-      if (target) {
-        const targetMember = message.guild.members.cache.get(target.id)
-        warns_channel = client.channels.cache.get('741370926570143784');        
-        targetMember.kick()
-        warns_channel.send(`──── Expulso ────
-
-:boy: Usuario: ${targetMember}
-:boy: ID: ${target.id}
-
-👮 Punido por: ${tag}
-
-──── Expulso ────`)
-      } else {
-        message.channel.send(`${tag} Especifique alguém para expulsar.`)
-      }
-    } else {
-      message.channel.send(
-        `${tag} Você não tem permissão para usar este comando.`
-      )
-    }
-  })
-})
-
-// BAN-AND-KICK-COMMAND //
 
 
 //  MUSIC-YOUTUBE //
@@ -300,8 +242,8 @@ function play(guild, song) {
 
 client.on("guildMemberRemove", async (member) => {
 
-  let guild = await client.guilds.cache.get("747251842769092729");
-  let channel = await client.channels.cache.get("826172332153372693");
+  let guild = await client.guilds.cache.get("628062062651768851");
+  let channel = await client.channels.cache.get("801542162764398602");
   let emoji = await member.guild.emojis.cache.find(emoji => emoji.name === ":wine_glass:");
   if (guild != member.guild) {
     return console.log("Alguem saiu do servidor. Mas não é nesse, então tá tudo bem :)");
@@ -325,8 +267,8 @@ client.on("guildMemberRemove", async (member) => {
 
 client.on("guildMemberAdd", async (member) => {
 
-  let guild = await client.guilds.cache.get("747251842769092729");
-  let channel = await client.channels.cache.get("826172332153372693");
+  let guild = await client.guilds.cache.get("628062062651768851");
+  let channel = await client.channels.cache.get("801541965819936849");
   let emoji = await member.guild.emojis.cache.find(emoji => emoji.name === "nomedoemoji");
   if (guild != member.guild) {
     return console.log("Sem boas-vindas pra você!");
